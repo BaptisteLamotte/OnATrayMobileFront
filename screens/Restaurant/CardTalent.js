@@ -14,7 +14,6 @@ function CardTalent (props) {
     const formations = props.talent.formation
     const talent = props.talent
 
-    console.log(talent.countFave)
 //Ensemble de condition permettant l'affichage des dernieres experience et foamrtions d'un talent
     if(experiences!= undefined){
         var experienceList = experiences.map((experience,i) => {

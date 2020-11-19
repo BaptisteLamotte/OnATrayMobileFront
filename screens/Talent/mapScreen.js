@@ -26,7 +26,7 @@ function mapScreen(props){
 
 //UseEffect permettant de recuperer l'adresse du talent connécté de de l'affiché sur la carte via un marqeurs 
 useEffect(()=>{
-    console.log(props.adressList)
+
         async function getMyAdress(){
         let rawResponse = await fetch('https://hidden-meadow-10798.herokuapp.com/talents/getMyAdress',{
         method: 'POST',

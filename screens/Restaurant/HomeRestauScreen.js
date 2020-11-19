@@ -60,14 +60,14 @@ function HomeRestauScrenn (props) {
         //UseEffect permettant aux restaurant de trier leur recherche avec des filtres
         useEffect(()=>{
             async function cherche(){
-                console.log('jobchoosen length',jobChoosen.length)
+               
                     if (jobChoosen.length == 0){
                         setposterecherché('tous les postes')
                     }
                     if(contractChoosen.length==0){
                         settypedecontrat('Tous type de contrat')
                     }
-                    console.log('post recherché',posterecherché)
+           
         
             var criteres = JSON.stringify({posterecherché: posterecherché,typedecontrat:typedecontrat})
             var rechercheListe = await fetch(`https://hidden-meadow-10798.herokuapp.com/restaurants/recherche-liste-talents`, {
@@ -76,7 +76,7 @@ function HomeRestauScrenn (props) {
                 body: `token=${token}&criteres=${criteres}`
             })
                 var response = await rechercheListe.json()
-                console.log('response list',response.liste)
+         
                 setTalentToDisplay(response.liste)
                 
             }
@@ -100,14 +100,11 @@ function HomeRestauScrenn (props) {
             if(jobChoosen.length>1){
                 setJobChoosen([])
             }
-            console.log('jobchoosen 0',jobChoosen[0])
-            console.log('jobchoosen',jobChoosen)
             setposterecherché(jobChoosen[0])
             
           };
           const onContractChoosen = (contractChoosen) => {
             setContractChosen(contractChoosen);
-            console.log('contractchoosen',contractChoosen)
             settypedecontrat(contractChoosen)
           };
     

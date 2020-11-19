@@ -1,6 +1,6 @@
 import React, {useState ,useEffect} from 'react'
 import {connect} from 'react-redux'
-
+import { withNavigationFocus } from 'react-navigation';
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import {Button, Header} from 'react-native-elements'
 
@@ -45,7 +45,7 @@ function ChatListScreen (props) {
         }
         getMyChatRoom()
 
-    }, [])
+    }, [props.isFocused])
    //Map sur le composant enfant ChatCard
     var chatCardList = listRoom.map((message,i)=>{
         if (message.contenu.length > 50){
@@ -79,4 +79,4 @@ function mapStateToProps(state) {
   export default connect(
     mapStateToProps, 
     null
-  )(ChatListScreen);
+  )(withNavigationFocus(ChatListScreen));
