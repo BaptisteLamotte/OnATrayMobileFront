@@ -40,6 +40,7 @@ function HomeTalentScreen (props) {
 
     const token = props.tokenToDisplay
     
+    //UseEffect permettant d'afficher la liste de restaurants disponible à l'initialisation du composant 
     useEffect(() => {
         async function cherche(){
             setSeeIndicator(true)
@@ -57,7 +58,7 @@ function HomeTalentScreen (props) {
             }
            
             var criteres = JSON.stringify({ambiance: ambianceCochee, cuisine: typeCuisinecochee, prix: prixCoche, type:typeRestaurantcochee, zone:zone})
-            var rawResponse = await fetch(`http://192.168.1.78:3000/talents/recherche-liste-restaurants`, {
+            var rawResponse = await fetch(`https://hidden-meadow-10798.herokuapp.com/talents/recherche-liste-restaurants`, {
                 method:'POST',
                 headers: {'Content-Type':'application/x-www-form-urlencoded'},
                 body: `token=${token}&restaurant=${criteres}`
@@ -83,8 +84,9 @@ function HomeTalentScreen (props) {
             props.onSendAdresses(objAdress)       
         }
         cherche()
+        // En parametre le string venant du store et qui force le rechargement du composant 
     }, [props.movementToDisplay])
-
+        //UseEffect permettant aux talents de trier leur recherche avec des filtres
     useEffect(() => {
         async function cherche(){
             setSeeIndicator(true)
@@ -101,7 +103,7 @@ function HomeTalentScreen (props) {
                 setTypeRestaurantcochee(listeTypes)
             }
             var criteres = JSON.stringify({ambiance: ambianceCochee, cuisine: typeCuisinecochee, prix: prixCoche, type:typeRestaurantcochee, zone:zone})
-            var rechercheListe = await fetch(`http://192.168.1.78:3000/talents/recherche-liste-restaurants`, {
+            var rechercheListe = await fetch(`https://hidden-meadow-10798.herokuapp.com/talents/recherche-liste-restaurants`, {
                 method:'POST',
                 headers: {'Content-Type':'application/x-www-form-urlencoded'},
                 body: `token=${token}&restaurant=${criteres}`
@@ -137,7 +139,7 @@ function HomeTalentScreen (props) {
         setAmbianceOptionChoosen(ambianceOptionChoosen)
         setAmbiancecochee(ambianceOptionChoosen)
     }
-
+    // Map sur la liste de restaurant à afficher 
     var restauList = restaurantList.map((e,i)=>{
         
         if(talentWhishList.includes(e._id)){
@@ -162,6 +164,7 @@ function HomeTalentScreen (props) {
             backgroundColor='#FED330'
             centerComponent={{ text: 'Rechercher', style: { color: '#4B6584' } }}
             /> 
+             {/* input permettant de filtré par type de cuisine  */}
             <MultiSelect
             uniqueKey="id"
             items={cookOption}
@@ -178,6 +181,7 @@ function HomeTalentScreen (props) {
             submitButtonColor="#FED330"
             searchInputPlaceholderText="Choisir un ou plusieurs"
             />
+             {/* input permettant de filtré par type d'ambiance  */}
             <MultiSelect
             uniqueKey="id"
             items={ambianceOption}
@@ -204,6 +208,7 @@ function HomeTalentScreen (props) {
 }
 function mapDispatchToProps(dispatch) {
     return {
+        //Envoi au store des adresses des restaurants de la liste pour les affichés sur la carte
       onSendAdresses: function(adresses){
           dispatch({type:'addAdresses',adresses})
       }

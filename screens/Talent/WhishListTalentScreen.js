@@ -28,11 +28,10 @@ function HomeTalentScreen (props) {
     const [prixCoche, setPrixcoche] = useState(listePrix)
     const [typeCuisinecochee, setTypeCuisinecochee] = useState(listeCuisines)
     const [typeRestaurantcochee, setTypeRestaurantcochee] = useState(listeTypes)
-    const [restoAAfficher, setRestoAAfficher] = useState({})
     const [talentWhishList, setTalentWhishList] = useState([])
 
     const token = props.tokenToDisplay
-    
+        //UseEffect permettant d'afficher la liste de restaurants disponible à l'initialisation du composant 
     useEffect(() => {
         async function cherche(){
             setSeeIndicator(true)
@@ -50,7 +49,7 @@ function HomeTalentScreen (props) {
             }
            
             var criteres = JSON.stringify({ambiance: ambianceCochee, cuisine: typeCuisinecochee, prix: prixCoche, type:typeRestaurantcochee, zone:zone})
-            var rawResponse = await fetch(`http://192.168.1.78:3000/talents/recherche-liste-restaurants`, {
+            var rawResponse = await fetch(`https://hidden-meadow-10798.herokuapp.com/talents/recherche-liste-restaurants`, {
                 method:'POST',
                 headers: {'Content-Type':'application/x-www-form-urlencoded'},
                 body: `token=${token}&restaurant=${criteres}`
@@ -85,11 +84,12 @@ function HomeTalentScreen (props) {
             for(let i=0;i<adresse.length;i++){
                 objAdress.push({lat:adresse[i][1], long:adresse[i][0], name :response.liste[i].name})
             }
-            props.onSendAdresses(objAdress)
-            props.onSendNavigationMemory({message : 'remember me'})
+            
+           
         }
 
         cherche()
+        // En parametre le string venant du store et qui force le rechargement du composant 
     }, [props.movementToDisplay])
 
     var restauList = restaurantList.map((e,i)=>{
@@ -118,19 +118,10 @@ function HomeTalentScreen (props) {
             backgroundColor='#FED330'
             centerComponent={{ text: 'Rechercher', style: { color: '#4B6584' } }}
             /> 
-            <View style={{display:'flex', justifyContent:'center', alignItems:'center', paddingTop:10}}>
-            </View>
             {viewToReturn}
         </View>
     )
 }
-function mapDispatchToProps(dispatch) {
-    return {
-      onSendAdresses: function(adresses){
-          dispatch({type:'addAdresses',adresses})
-      }
-    }
-  }
 
 function mapStateToProps(state){
     return { tokenToDisplay : state.token, movementToDisplay : state.movement}
@@ -138,5 +129,5 @@ function mapStateToProps(state){
 
 export default connect(
     mapStateToProps, 
-    mapDispatchToProps
+    null
   )(HomeTalentScreen);

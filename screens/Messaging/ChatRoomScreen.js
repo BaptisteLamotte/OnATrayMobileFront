@@ -8,7 +8,7 @@ import {Input,Header} from 'react-native-elements'
 
 
 import { FontAwesome } from '@expo/vector-icons';
-var socket = socketIOClient("http://192.168.1.78:3000");
+var socket = socketIOClient("https://hidden-meadow-10798.herokuapp.com");
 
 function ChatRoomScreen (props) {
 
@@ -25,7 +25,7 @@ function ChatRoomScreen (props) {
 
     useEffect(()=>{
         async function getOldMessage(){
-            let rawResponse = await fetch('http://192.168.1.78:3000/getOldMessage', {
+            let rawResponse = await fetch('https://hidden-meadow-10798.herokuapp.com/getOldMessage', {
             method:'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
             body : `chatRoomId=${props.chatRoomDataToDisplay.room}&token=${props.chatRoomDataToDisplay.desti}`

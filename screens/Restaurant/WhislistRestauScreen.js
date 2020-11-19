@@ -37,12 +37,13 @@ function HomeRestauScrenn (props) {
 
     let talentTab=[{name:'Gérard Depardieu',url : 'http://res.cloudinary.com/dpyqb49ha/image/upload/v1604656987/yxxwniyub5pcrbqvw1s1.jpg'}]
 
+    //UseEffect permettant l'affichage de la liste de talent ajouté en favoris
     useEffect(() => {
 
         async function loaddata(){
             setSeeIndicator(true)
         var criteres = JSON.stringify({posterecherché: posterecherché, zone:zone,typedecontrat:typedecontrat})
-        var rawResponse = await fetch(`http://192.168.1.78:3000/restaurants/recherche-liste-talents`, {
+        var rawResponse = await fetch(`https://hidden-meadow-10798.herokuapp.com/restaurants/recherche-liste-talents`, {
             method:'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
             body: `token=${token}&criteres=${criteres}`
@@ -54,9 +55,36 @@ function HomeRestauScrenn (props) {
             setSeeIndicator(false)
         }
         loaddata()
+         // En parametre le string venant du store et qui force le rechargement du composant
         },[props.movementToDisplay])
 
+        //UseEffect permettant aux restaurant de trier leur recherche avec des filtres
+        useEffect(()=>{
+            async function cherche(){
+                console.log('jobchoosen length',jobChoosen.length)
+                    if (jobChoosen.length == 0){
+                        setposterecherché('tous les postes')
+                    }
+                    if(contractChoosen.length==0){
+                        settypedecontrat('Tous type de contrat')
+                    }
+                    console.log('post recherché',posterecherché)
+        
+            var criteres = JSON.stringify({posterecherché: posterecherché,typedecontrat:typedecontrat})
+            var rechercheListe = await fetch(`https://hidden-meadow-10798.herokuapp.com/restaurants/recherche-liste-talents`, {
+                method:'POST',
+                headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                body: `token=${token}&criteres=${criteres}`
+            })
+                var response = await rechercheListe.json()
+                console.log('response list',response.liste)
+                setTalentToDisplay(response.liste)
+                
+            }
+            cherche()
+        },[posterecherché,typedecontrat])
 
+        //Map sur les talents à afficher    
         var talentList = talentToDisplay.map((e,i)=>{
             if(wishlistRestaurantID.includes(e._id)){
                 var isLike = true
@@ -87,7 +115,7 @@ function HomeRestauScrenn (props) {
             backgroundColor='#FED330'
             centerComponent={{ text: 'Mes favoris', style: { color: '#4B6584' } }}
             />
-          
+           {/* input permettant de filtré par type de metier  */}
             <MultiSelect
             uniqueKey="id"
             items={jobToChoose}
@@ -103,7 +131,7 @@ function HomeRestauScrenn (props) {
             selectText="Métier recherchés"
             searchInputPlaceholderText="Choisir un ou plusieurs"
             />
-           
+            {/* input permettant de filtré par type de contrat  */}
             <MultiSelect
             uniqueKey="id"
             items={contractToChoose}

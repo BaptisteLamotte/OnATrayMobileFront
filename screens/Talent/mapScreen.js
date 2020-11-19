@@ -1,3 +1,4 @@
+//Composant affichant les restaurants sur la carte via des marqueurs
 import React, {useEffect, useState} from 'react'
 import {View, Text} from 'react-native'
 import MapView, {Marker} from 'react-native-maps';
@@ -5,6 +6,7 @@ import {Header,Button} from 'react-native-elements'
 import { connect } from 'react-redux';
 import { useSafeArea } from 'react-native-safe-area-context';
 import { FontAwesome } from '@expo/vector-icons';
+
 
 const zoneFrance= [
     [ -5.3173828125, 48.458124202908934 ],
@@ -22,27 +24,26 @@ function mapScreen(props){
     const [myAdress, setMyAdress] = useState(null)
     const adressList = props.adressList
 
+//UseEffect permettant de recuperer l'adresse du talent connécté de de l'affiché sur la carte via un marqeurs 
 useEffect(()=>{
     console.log(props.adressList)
         async function getMyAdress(){
-        let rawResponse = await fetch('http://192.168.1.78:3000/talents/getMyAdress',{
+        let rawResponse = await fetch('https://hidden-meadow-10798.herokuapp.com/talents/getMyAdress',{
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: `token=${props.tokenToDisplay}`
         })
-        let response = await rawResponse.json()
-       // console.log(response)
+        let response = await rawResponse.json() 
         setMyAdress({long : response.long, lat : response.lat})
     }
-
     getMyAdress();
-       // console.log(myAdress)
+      
 },[])
+//Map sur les adresses des restaurants pour affiché les marqueurs 
 var markerListToDisplay = adressList.map((e,i)=>{
-
 return (
     <Marker 
-    pinColor='purple'
+    pinColor='#4B6584'
     key={i}
     title={e.name}
     coordinate={{latitude: e.lat, longitude: e.long}}/>
@@ -57,6 +58,7 @@ if(myAdress != null){
     markerToDisplay = <Marker
     title='Moi'
     coordinate={{latitude: myAdress.lat, longitude: myAdress.long}}
+    pinColor='#FED330'
 />
 }
 else{ markerToDisplay;

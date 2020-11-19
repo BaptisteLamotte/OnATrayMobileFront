@@ -7,14 +7,15 @@ import { Card } from 'react-native-elements'
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 
+//Composant enfant de HomeRestauScreen et de WishListRestauScreen
 function CardTalent (props) {
-    
-    
     let isLike = props.isLike
     const experiences = props.talent.experience
     const formations = props.talent.formation
     const talent = props.talent
 
+    console.log(talent.countFave)
+//Ensemble de condition permettant l'affichage des dernieres experience et foamrtions d'un talent
     if(experiences!= undefined){
         var experienceList = experiences.map((experience,i) => {
             return(<Text  key={i}> {experience.firm}- {experience.job} - {experience.startingDate} - {experience.endingDate} - {experience.city}</Text>)
@@ -92,10 +93,10 @@ function CardTalent (props) {
     }else{
        var heartToDisplay = <AntDesign onPress={()=>toggleWhishList()}  name="hearto" size={24} color={iconColor} />
     }
-
+    //Fonction permettant au restaurant d'ajouter ou de supprimer un talent de sa liste de favoris 
     var toggleWhishList = async () => {
 
-        let rawResponse = await fetch('http://192.168.1.78:3000/restaurants/addToWishList',{
+        let rawResponse = await fetch('https://hidden-meadow-10798.herokuapp.com/restaurants/addToWishList',{
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: `id=${talent._id}&token=${props.tokenToDisplay}`
@@ -104,9 +105,10 @@ function CardTalent (props) {
         let response = await rawResponse.json()
         props.onSendReload({movement:'movement'});
     }
+
+    // fonction qui crée une chat room entre deux personnes 
     var onSendDm = async () => {
-        // fonction qui crée une chat room entre deux personnes 
-           let rawResponse = await fetch('http://192.168.1.78:3000/createChatRoom', {
+           let rawResponse = await fetch('https://hidden-meadow-10798.herokuapp.com/createChatRoom', {
                 method:'POST',
                 headers: {'Content-Type':'application/x-www-form-urlencoded'},
                 body : `expediteur=${props.tokenToDisplay}&desti=${talent.token}`
@@ -141,6 +143,8 @@ var firstParagraphe = <Text>{chercheUnEmploi}{jobs}</Text>
             {experiencelistToDisplay}
             <Text style={{fontWeight:'bold'}}>Langues parlées</Text>
             <Text>{langues}</Text>
+            <Text style={{fontWeight:'bold'}}>Visibilité</Text>
+            <Text>Est dans les favoris de {talent.countFave} restaurants.</Text>
             </View>
             {/* <Text>{talent.countFav}</Text> */}
             <Card.Divider/>
@@ -158,16 +162,20 @@ const iconColor = '#4B6584'
 function mapStateToProps(state){
     return { tokenToDisplay : state.token}
 }
+
 function mapDispatchToProps(dispatch) {
     return {
+        //Envoi au store des inforamtions pour diriger l'utilisateur dans la bonne chat room 
       onSendChatRoomData: function(data) { 
           dispatch( {type: 'addChatRoomData', data} ) 
       },
+      //Envoie au store d'un string permettant de forcer le rechargement de la page
       onSendReload: function(movement){
           dispatch({type:'reloadData',movement})
       }
     }
   }
+  //Export du composant en forcant la navigation 
 export default connect(
     mapStateToProps, 
     mapDispatchToProps

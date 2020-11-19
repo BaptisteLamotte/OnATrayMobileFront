@@ -36,12 +36,13 @@ function HomeRestauScrenn (props) {
     const [wishlistRestaurantID,setwishlistRestaurantID]=useState([])
     const [talentToDisplay, setTalentToDisplay] = useState([])
 
+    //UseEffect permettant l'affichage de toute la liste de talent
     useEffect(() => {
 
         async function loaddata(){
             setSeeIndicator(true)
         var criteres = JSON.stringify({posterecherché: posterecherché, zone:zone,typedecontrat:typedecontrat})
-        var rawResponse = await fetch(`http://192.168.1.78:3000/restaurants/recherche-liste-talents`, {
+        var rawResponse = await fetch(`https://hidden-meadow-10798.herokuapp.com/restaurants/recherche-liste-talents`, {
             method:'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
             body: `token=${token}&criteres=${criteres}`
@@ -53,8 +54,10 @@ function HomeRestauScrenn (props) {
             setSeeIndicator(false)
         }
         loaddata()
+        // En parametre le string venant du store et qui force le rechargement du composant 
         },[props.movementToDisplay])
 
+        //UseEffect permettant aux restaurant de trier leur recherche avec des filtres
         useEffect(()=>{
             async function cherche(){
                 console.log('jobchoosen length',jobChoosen.length)
@@ -67,7 +70,7 @@ function HomeRestauScrenn (props) {
                     console.log('post recherché',posterecherché)
         
             var criteres = JSON.stringify({posterecherché: posterecherché,typedecontrat:typedecontrat})
-            var rechercheListe = await fetch(`http://192.168.1.78:3000/restaurants/recherche-liste-talents`, {
+            var rechercheListe = await fetch(`https://hidden-meadow-10798.herokuapp.com/restaurants/recherche-liste-talents`, {
                 method:'POST',
                 headers: {'Content-Type':'application/x-www-form-urlencoded'},
                 body: `token=${token}&criteres=${criteres}`
@@ -80,7 +83,7 @@ function HomeRestauScrenn (props) {
             cherche()
         },[posterecherché,typedecontrat])
 
-
+        //Map sur les talents à afficher 
         var talentList = talentToDisplay.map((e,i)=>{
             if(wishlistRestaurantID.includes(e._id)){
                 var isLike = true
@@ -121,6 +124,7 @@ function HomeRestauScrenn (props) {
             backgroundColor='#FED330'
             centerComponent={{ text: 'Rechercher', style: { color: '#4B6584' } }}
             />   
+            {/* input permettant de filtré par type de metier  */}
             <MultiSelect
             uniqueKey="id"
             items={jobToChoose}
@@ -137,6 +141,7 @@ function HomeRestauScrenn (props) {
             submitButtonColor="#FED330"
             searchInputPlaceholderText="Choisir un ou plusieurs"
             />
+            {/* input permettant de filtré par type de contrat  */}
             <MultiSelect
             uniqueKey="id"
             items={contractToChoose}

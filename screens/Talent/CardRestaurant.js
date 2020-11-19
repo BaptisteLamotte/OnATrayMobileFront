@@ -12,9 +12,9 @@ function CardRestaurant(props){
     let isLike = props.isLike
     const restaurant = props.restaurant
     const image = props.image
-    
+    //Fonction permettant à l'utilisateur talent d'ajouter ou d'enlever un restaurant de ses favoris 
     var toggleWhishList = async () => {
-        let rawResponse = await fetch('http://192.168.1.78:3000/talents/whishlist',{
+        let rawResponse = await fetch('https://hidden-meadow-10798.herokuapp.com/talents/whishlist',{
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: `token=${props.tokenToDisplay}&restaurant=${restaurant._id}`
@@ -23,6 +23,7 @@ function CardRestaurant(props){
         let response = await rawResponse.json()
         props.onSendReload({movement:'movement'});
     }
+    //Ensemble de condition permettant l'affichage du profil des restaurants. 
     var cuisine = ' '
     if(restaurant.typeOfFood){
         for(var i=0; i<restaurant.typeOfFood.length; i++){
@@ -63,12 +64,13 @@ function CardRestaurant(props){
         var prix = '--'
     }
 
-
+    
     if(isLike){
         var heartToDisplay = <AntDesign onPress={()=>toggleWhishList()} name="heart" size={24} color={iconColor} />
     }else{
        var heartToDisplay = <AntDesign onPress={()=>toggleWhishList()}  name="hearto" size={24} color={iconColor} />
     }
+    //Liens permettant d'acceder a facebook ou à instagram (rajouter la possibilité au restaurant de le renseigner dans l'inscritpion sur l'appli web)
     var openFacebook = () => {
         WebBrowser.openBrowserAsync('https://facebook.com');
     }
@@ -117,9 +119,13 @@ function mapStateToProps(state){
 }
 function mapDispatchToProps(dispatch) {
     return {
+        //Envoi au store d'un string pour forcer le rechargement du composant parent
       onSendReload: function(movement){
           dispatch({type:'reloadData',movement})
       }
     }
   }
-export default connect(mapStateToProps,mapDispatchToProps)(CardRestaurant)
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps)
+(CardRestaurant)

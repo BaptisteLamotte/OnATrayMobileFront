@@ -3,13 +3,14 @@ import { withNavigation } from 'react-navigation';
 import {connect} from 'react-redux'
 
 import { View, Text, Image } from 'react-native'
-
+//Cette fonction permet de se rendre dans la chat Room approprié, grâce aux informations envoyés au store
 function ChatCard(props){
 
     var navigate = () => {
     props.onSendChatRoomData({name:props.myToken,desti:props.tokenDesti, room: props.roomName, destiName: props.name})
     props.navigation.navigate('chatRoom')
 }
+//Ce composant enfant retourne une vignette comprenant le premier message adresser à un interlocuteur, son nom et sa pgoto de profil.
     return(
         <View 
             style={{ height:80, backgroundColor:'white', display:'flex', flexDirection:'row', alignItems:'center', marginBottom:1}}
@@ -28,6 +29,7 @@ function ChatCard(props){
         </View>
     )
 }
+//Envoi au store des informations approprié 
 function mapDispatchToProps(dispatch) {
     return {
       onSendChatRoomData: function(data) { 
@@ -35,7 +37,7 @@ function mapDispatchToProps(dispatch) {
       }
     }
   }
-  
+  //Export du composant en forcant la navigation 
   export default connect(
       null, 
       mapDispatchToProps

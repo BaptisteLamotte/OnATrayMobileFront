@@ -14,11 +14,12 @@ const [password, setPassword] = useState('')
 
 const [errorMessage, setErrorMessage] = useState(<Text></Text>)
 
+//Fonction permettant à l'utilisateur déja inscrit de se connecter
 var navigate = async () => {
     let isRestau = false;
     let isTalent = false;
   
-    var rawResponse = await fetch("http://192.168.1.78:3000/sign_in", {
+    var rawResponse = await fetch("https://hidden-meadow-10798.herokuapp.com/sign_in", {
         method: 'post',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body:`email=${email}&password=${password}`
@@ -29,6 +30,7 @@ var navigate = async () => {
         setErrorMessage(<Text  style={{color:'red', paddingBottom:10}}>Email ou mot de passe incorrecte</Text>)
     }
     else{
+        // Navigation conditionnel en fonction du type d'utilisateur
         if(response.type == 'talent'){
             isTalent = true;
             props.onSendToken(response.token)
@@ -44,10 +46,11 @@ var navigate = async () => {
     }else if(isTalent){
         props.navigation.navigate('HomeTalent')
     }
-   // setEmail('')
-   // setPassword('')
+    setEmail('')
+    setPassword('')
 }
 
+//Lien permettant d'acceder à l'application web pour se créer un compte si l'utilisateur n'en possède pas
 var openBrowser = () => {
     WebBrowser.openBrowserAsync('https://nameless-lake-13290.herokuapp.com');
 }
@@ -82,9 +85,11 @@ var openBrowser = () => {
 
 function mapDispatchToProps(dispatch) {
     return {
+        //Envoi au store du token de l'utilisateur 
       onSendToken: function(token) { 
           dispatch( {type: 'addToken', token} ) 
       }, 
+      //Envoi au store d'un objet permmetant d'identifié s'il est restaurant ou talent 
       onSendIsConnect : function(isConnect){
           dispatch({type:'addConnect', isConnect})
       }
